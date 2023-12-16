@@ -18,7 +18,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    /* public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string',
@@ -39,7 +39,7 @@ class UserController extends Controller
         ]);
 
         return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
-    }
+    } */
 
     /**
      * Display the specified resource.
@@ -74,5 +74,5 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
-    
+
 }

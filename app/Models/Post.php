@@ -15,15 +15,18 @@ class Post extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_id',
+        'category_id',
         'title',
         'content',
         'img',
     ];
 
-    public function category(){
-        return $this->hasOne(Category::class);
-    }
     public function user(){
-        return $this->hasOne(User::class);
+        return $this->belongsTo('App\Models\User','user_id');
     }
+    public function category(){
+        return $this->belongsTo('App\Models\Category','category_id');
+    }
+  
 }

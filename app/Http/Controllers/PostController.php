@@ -5,31 +5,47 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
+
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-       // return (Post::all());
+        return (Post::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
+ 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePostRequest $request)
-    {
-        //
+    public function store(Request $request)
+    {           
+
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'user_id' => 'required|exists:users,id',
+            'title' => 'required|string',
+            'content' => 'required|string',
+            'img' => 'nullable|string',
+        ]);   
+
+        $post = Post::create([
+            'category_id' => $request->category_id,
+            'user_id' => $request->user_id,
+            'title' => $request->title,
+            'content' => $request->content,
+            'img' => $request->img,
+        ]);        
+        return response()->json(['message' => 'Post Created Successfully','post' => $post],201);
     }
 
     /**
@@ -37,23 +53,27 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return $post;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(Request $request, Post $post)
     {
-        //
+        $request->validate([
+            'category_id' => 'sometimes|exists:categories,id',
+            'title' => 'sometimes|string',
+            'content' => 'sometimes|string',
+            'img' => 'sometimes|string|nullable',
+        ]);
+
+        $post->update($request->all());
+
+        return response()->json(['message' => 'Post updated successfully', 'post' => $post]);
+
     }
 
     /**
@@ -61,6 +81,6 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
     }
 }
